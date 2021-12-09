@@ -7,6 +7,11 @@
 *.dylib
 *.pyc
 *~
+*.svg
+*.tar.gz
+out.folded
+out.perf
+perf.data
 /config.*
 /aclocal.m4
 /autom4te.cache/
@@ -16,3 +21,4 @@
 /c_api/gpu/bin/
 /tests/test
 /tests/gtest/
+build
