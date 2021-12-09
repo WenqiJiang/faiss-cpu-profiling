@@ -78,20 +78,7 @@ double elapsed() {
 int main() {
     double t0 = elapsed();
 
-    // this is typically the fastest one.
-    const char* index_key = "IVF4096,Flat";
-
-    // these ones have better memory usage
-    // const char *index_key = "Flat";
-    // const char *index_key = "PQ32";
-    // const char *index_key = "PCA80,Flat";
-    // const char *index_key = "IVF4096,PQ8+16";
-    // const char *index_key = "IVF4096,PQ32";
-    // const char *index_key = "IMI2x8,PQ32";
-    // const char *index_key = "IMI2x8,PQ8+16";
-    // const char *index_key = "OPQ16_64,IMI2x8,PQ8+16";
-
-    faiss::Index* index = faiss::read_index("/home/ubuntu/index/SIFT1M_populated_index.faissindex");;
+    faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes/bench_cpu_SIFT1M_IVF1024,PQ16/SIFT1M_IVF1024,PQ16_populated.index");;
 
     size_t d = 128;
     size_t nq;
@@ -105,7 +92,8 @@ int main() {
         assert(d == d2 || !"query does not have same dimension as train set");
     }
 
-    size_t k;                // nb of results per query in the GT
+    size_t k = 100;                // topK of results per query
+    size_t k_max;                // topK of results per query in the GT
     faiss::Index::idx_t* gt; // nq * k matrix of ground-truth nearest-neighbors
 
     {
@@ -115,7 +103,7 @@ int main() {
 
         // load ground-truth and convert int to long
         size_t nq2;
-        int* gt_int = ivecs_read("sift1M/sift_groundtruth.ivecs", &k, &nq2);
+        int* gt_int = ivecs_read("sift1M/sift_groundtruth.ivecs", &k_max, &nq2);
         assert(nq2 == nq || !"incorrect nb of ground truth entries");
 
         gt = new faiss::Index::idx_t[k * nq];
@@ -126,48 +114,7 @@ int main() {
     }
 
     // Result of the auto-tuning
-    std::string selected_params;
-
-    { // run auto-tuning
-
-        printf("[%.3f s] Preparing auto-tune criterion 1-recall at 1 "
-               "criterion, with k=%ld nq=%ld\n",
-               elapsed() - t0,
-               k,
-               nq);
-
-        faiss::OneRecallAtRCriterion crit(nq, 1);
-        crit.set_groundtruth(k, nullptr, gt);
-        crit.nnn = k; // by default, the criterion will request only 1 NN
-
-        printf("[%.3f s] Preparing auto-tune parameters\n", elapsed() - t0);
-
-        faiss::ParameterSpace params;
-        params.initialize(index);
-
-        printf("[%.3f s] Auto-tuning over %ld parameters (%ld combinations)\n",
-               elapsed() - t0,
-               params.parameter_ranges.size(),
-               params.n_combinations());
-
-        faiss::OperatingPoints ops;
-        params.explore(index, nq, xq, crit, &ops);
-
-        printf("[%.3f s] Found the following operating points: \n",
-               elapsed() - t0);
-
-        ops.display();
-
-        // keep the first parameter that obtains > 0.5 1-recall@1
-        for (int i = 0; i < ops.optimal_pts.size(); i++) {
-            if (ops.optimal_pts[i].perf > 0.5) {
-                selected_params = ops.optimal_pts[i].key;
-                break;
-            }
-        }
-        assert(selected_params.size() >= 0 ||
-               !"could not find good enough op point");
-    }
+    std::string selected_params = "nprobe=16";
 
     { // Use the found configuration to perform a search
 
@@ -194,7 +141,7 @@ int main() {
         // evaluate result by hand.
         int n_1 = 0, n_10 = 0, n_100 = 0;
         for (int i = 0; i < nq; i++) {
-            int gt_nn = gt[i * k];
+            int gt_nn = gt[i * k_max];
             for (int j = 0; j < k; j++) {
                 if (I[i * k + j] == gt_nn) {
                     if (j < 1)
