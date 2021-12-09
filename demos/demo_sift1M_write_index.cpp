@@ -79,7 +79,7 @@ int main() {
     double t0 = elapsed();
 
     // this is typically the fastest one.
-    const char* index_key = "IVF4096,Flat";
+    //const char* index_key = "IVF4096,Flat";
 
     // these ones have better memory usage
     // const char *index_key = "Flat";
@@ -87,6 +87,7 @@ int main() {
     // const char *index_key = "PCA80,Flat";
     // const char *index_key = "IVF4096,PQ8+16";
     // const char *index_key = "IVF4096,PQ32";
+    const char *index_key = "IVF1024,PQ16";
     // const char *index_key = "IMI2x8,PQ32";
     // const char *index_key = "IMI2x8,PQ8+16";
     // const char *index_key = "OPQ16_64,IMI2x8,PQ8+16";

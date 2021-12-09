@@ -22,3 +22,5 @@ perf.data
 /tests/test
 /tests/gtest/
 build
+SIFT1M
+sift1M

@@ -75,10 +75,16 @@ double elapsed() {
     return tv.tv_sec + tv.tv_usec * 1e-6;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     double t0 = elapsed();
 
-    faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes/bench_cpu_SIFT1M_IVF1024,PQ16/SIFT1M_IVF1024,PQ16_populated.index");;
+    std::string index_dir = "/home/ubuntu/trained_CPU_indexes_C/SIFT1M_IVF1024,PQ16_populated_index";
+    index_dir = argv[1];
+
+    faiss::Index* index = faiss::read_index(index_dir.c_str());
+    // faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes_python/bench_cpu_SIFT1M_IMI2x8,PQ16/SIFT1M_IMI2x8,PQ16_populated.index");
+    // faiss::Index* index = faiss::read_index("/home/ubuntu/index/SIFT1M_IVF1024,PQ16_populated_index");
+    //faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes/bench_cpu_SIFT1M_IVF1024,PQ16/SIFT1M_IVF1024,PQ16_populated.index");;
 
     size_t d = 128;
     size_t nq;
@@ -104,17 +110,19 @@ int main() {
         // load ground-truth and convert int to long
         size_t nq2;
         int* gt_int = ivecs_read("sift1M/sift_groundtruth.ivecs", &k_max, &nq2);
+//k=k_max;
+printf("k=%d k_max=%d\n", k, k_max);
         assert(nq2 == nq || !"incorrect nb of ground truth entries");
 
-        gt = new faiss::Index::idx_t[k * nq];
-        for (int i = 0; i < k * nq; i++) {
+        gt = new faiss::Index::idx_t[k_max * nq];
+        for (int i = 0; i < k_max * nq; i++) {
             gt[i] = gt_int[i];
         }
         delete[] gt_int;
     }
 
     // Result of the auto-tuning
-    std::string selected_params = "nprobe=16";
+    std::string selected_params = "nprobe=64";
 
     { // Use the found configuration to perform a search
 
@@ -133,9 +141,15 @@ int main() {
         // output buffers
         faiss::Index::idx_t* I = new faiss::Index::idx_t[nq * k];
         float* D = new float[nq * k];
-
+	
+	// WENQI: use more iterations to help perf record performance
+	for (int search_cnt = 0; search_cnt < 100; search_cnt++) {
         index->search(nq, xq, k, D, I);
+        }
 
+        double t_search = elapsed() - t0;
+        double QPS = ((double) nq) / t_search;
+        printf("[%.3f s] Search complete, QPS=%.3f\n", t_search, QPS);
         printf("[%.3f s] Compute recalls\n", elapsed() - t0);
 
         // evaluate result by hand.
@@ -151,6 +165,9 @@ int main() {
                     if (j < 100)
                         n_100++;
                 }
+		else {
+//		    printf("gt: %d\treturned: %d\n", gt_nn, I[i * k + j]);
+		}
             }
         }
         printf("R@1 = %.4f\n", n_1 / float(nq));

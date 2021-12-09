@@ -25,5 +25,8 @@ target_link_libraries(demo_sift1M_write_index PRIVATE faiss)
 add_executable(demo_sift1M_read_index EXCLUDE_FROM_ALL demo_sift1M_read_index.cpp)
 target_link_libraries(demo_sift1M_read_index PRIVATE faiss)
 
+add_executable(demo_sift1B_write_index EXCLUDE_FROM_ALL demo_sift1B_write_index.cpp)
+target_link_libraries(demo_sift1B_write_index PRIVATE faiss)
+
 add_executable(demo_weighted_kmeans EXCLUDE_FROM_ALL demo_weighted_kmeans.cpp)
 target_link_libraries(demo_weighted_kmeans PRIVATE faiss)
