@@ -21,9 +21,6 @@
 #include <faiss/index_factory.h>
 #include <faiss/index_io.h>
 
-// Wenqi
-#include <faiss/IndexIVFPQ.h>
-
 /**
  * To run this demo, please download the ANN_SIFT1M dataset from
  *
@@ -81,19 +78,36 @@ double elapsed() {
 int main(int argc, char *argv[]) {
     double t0 = elapsed();
 
-    std::string index_dir = "/home/ubuntu/trained_CPU_indexes_C/SIFT1M_IVF1024,PQ16_populated_index";
-    index_dir = argv[1];
+    // trained index, later add vector it as populated index
+    std::string index_dir = "/data/trained_CPU_indexes_python/bench_cpu_SIFT1M_IVF1024,PQ16/SIFT1M_IVF1024,PQ16_trained.index";
+    // index_dir = argv[1];
 
-    faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) faiss::read_index(index_dir.c_str());
-    //faiss::Index* index = faiss::read_index(index_dir.c_str());
+    faiss::Index* index = faiss::read_index(index_dir.c_str());
     // faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes_python/bench_cpu_SIFT1M_IMI2x8,PQ16/SIFT1M_IMI2x8,PQ16_populated.index");
-
-    //IndexIVFPQ::IndexIVFPQ* index = (IndexIVFPQ::IndexIVFPQ*) index;
-    //faiss::Index::IndexIVFPQ* index_c = (faiss::Index::IndexIVFPQ*) index;
-    //faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) index;
-    printf("imbalance factor of the index: %f\n", index -> invlists -> imbalance_factor());
+    // faiss::Index* index = faiss::read_index("/home/ubuntu/index/SIFT1M_IVF1024,PQ16_populated_index");
+    //faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes/bench_cpu_SIFT1M_IVF1024,PQ16/SIFT1M_IVF1024,PQ16_populated.index");;
 
     size_t d = 128;
+    {
+        printf("[%.3f s] Loading database\n", elapsed() - t0);
+
+        size_t nb, d2;
+        float* xb = fvecs_read("sift1M/sift_base.fvecs", &d2, &nb);
+        assert(d == d2 || !"dataset does not have same dimension as train set");
+
+        printf("[%.3f s] Indexing database, size %ld*%ld\n",
+               elapsed() - t0,
+               nb,
+               d);
+
+        index->add(nb, xb);
+
+        delete[] xb;
+    }
+    // index is already faiss:Index* type
+    faiss::write_index(index, "/data/trained_CPU_indexes_python_train_C_add/populated.index");
+
+
     size_t nq;
     float* xq;
 

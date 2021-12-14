@@ -4,6 +4,9 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
+add_executable(bigann_search EXCLUDE_FROM_ALL bigann_search.cpp)
+target_link_libraries(bigann_search PRIVATE faiss)
+
 add_executable(demo_imi_flat EXCLUDE_FROM_ALL demo_imi_flat.cpp)
 target_link_libraries(demo_imi_flat PRIVATE faiss)
 
@@ -21,6 +24,9 @@ target_link_libraries(demo_sift1M PRIVATE faiss)
 
 add_executable(demo_sift1M_write_index EXCLUDE_FROM_ALL demo_sift1M_write_index.cpp)
 target_link_libraries(demo_sift1M_write_index PRIVATE faiss)
+
+add_executable(demo_sift1M_write_index_from_trained_index EXCLUDE_FROM_ALL demo_sift1M_write_index_from_trained_index.cpp)
+target_link_libraries(demo_sift1M_write_index_from_trained_index PRIVATE faiss)
 
 add_executable(demo_sift1M_read_index EXCLUDE_FROM_ALL demo_sift1M_read_index.cpp)
 target_link_libraries(demo_sift1M_read_index PRIVATE faiss)

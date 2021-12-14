@@ -76,8 +76,10 @@ double elapsed() {
 }
 
 int main() {
+    // WENQI: THIS PROGRAM IS UNFINISHED
     double t0 = elapsed();
 
+   
     // this is typically the fastest one.
     //const char* index_key = "IVF4096,Flat";
 

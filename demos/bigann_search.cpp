@@ -1,8 +1,7 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+/*
+  Usage: ./binary index_dir gt_dir topK nprobe
+  Example Usage:
+    ./build/demos/bigann_search /data/trained_CPU_indexes_python/bench_cpu_SIFT100M_OPQ16,IVF65536,PQ16/SIFT100M_OPQ16,IVF65536,PQ16_populated.index /data/Faiss_experiments/bigann/gnd/idx_100M.ivecs 100 64
  */
 
 #include <cassert>
@@ -72,6 +71,43 @@ int* ivecs_read(const char* fname, size_t* d_out, size_t* n_out) {
     return (int*)fvecs_read(fname, d_out, n_out);
 }
 
+// WENQI: load bvecs (1 int + uint8 * 128 per vec) in memory, as float format
+float* bvecs_read(const char* fname, size_t* d_out, size_t* n_out) {
+    FILE* f = fopen(fname, "r");
+    if (!f) {
+        fprintf(stderr, "could not open %s\n", fname);
+        perror("");
+        abort();
+    }
+    int d;
+    fread(&d, 1, sizeof(int), f);
+    assert((d > 0 && d < 1000000) || !"unreasonable dimension");
+    fseek(f, 0, SEEK_SET);
+    struct stat st;
+    fstat(fileno(f), &st);
+    size_t sz = st.st_size;
+    assert(sz % (d + 4) == 0 || !"weird file size");
+    size_t n = sz / (d + 4);
+
+    *d_out = d;
+    *n_out = n;
+    unsigned char* x = new unsigned char[n * (d + 4)];
+    size_t nr = fread(x, sizeof(unsigned char), n * (d + 4), f);
+    assert(nr == n * (d + 4) || !"could not read whole file");
+
+    float* vec = new float[n * d];
+    // remove header and convert uint8 to float
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = 0; j < d; j++) {
+            vec[i * d + j] = (float) x[i * (d + 4) + 4 + j]; 
+        }
+    }
+    delete []x;
+
+    fclose(f);
+    return vec;
+}
+
 double elapsed() {
     struct timeval tv;
     gettimeofday(&tv, nullptr);
@@ -81,17 +117,23 @@ double elapsed() {
 int main(int argc, char *argv[]) {
     double t0 = elapsed();
 
-    std::string index_dir = "/home/ubuntu/trained_CPU_indexes_C/SIFT1M_IVF1024,PQ16_populated_index";
-    index_dir = argv[1];
+    if (argc != 5) {
+        printf("Usage: ./binary index_dir gt_dir topK nprobe\nExit\n");
+        exit(1);
+    }
 
-    faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) faiss::read_index(index_dir.c_str());
-    //faiss::Index* index = faiss::read_index(index_dir.c_str());
+    std::string index_dir = argv[1];
+    // std::string index_dir = "/home/ubuntu/trained_CPU_indexes_C/SIFT1M_IVF1024,PQ16_populated_index";
+    std::string gt_dir = argv[2];
+    // std::string gt_dir = "/data/Faiss_experiments/bigann/gnd/idx_1M.ivecs";
+    int k = std::stoi(argv[3]);
+    int nprobe = std::stoi(argv[4]);
+
+    // faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) faiss::read_index(index_dir.c_str());
+    faiss::Index* index = faiss::read_index(index_dir.c_str());
     // faiss::Index* index = faiss::read_index("/home/ubuntu/trained_CPU_indexes_python/bench_cpu_SIFT1M_IMI2x8,PQ16/SIFT1M_IMI2x8,PQ16_populated.index");
 
-    //IndexIVFPQ::IndexIVFPQ* index = (IndexIVFPQ::IndexIVFPQ*) index;
-    //faiss::Index::IndexIVFPQ* index_c = (faiss::Index::IndexIVFPQ*) index;
-    //faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) index;
-    printf("imbalance factor of the index: %f\n", index -> invlists -> imbalance_factor());
+    // printf("imbalance factor of the index: %f\n", index -> invlists -> imbalance_factor());
 
     size_t d = 128;
     size_t nq;
@@ -101,11 +143,15 @@ int main(int argc, char *argv[]) {
         printf("[%.3f s] Loading queries\n", elapsed() - t0);
 
         size_t d2;
-        xq = fvecs_read("sift1M/sift_query.fvecs", &d2, &nq);
+        xq = bvecs_read("/data/Faiss_experiments/bigann/bigann_query.bvecs", &d2, &nq);
         assert(d == d2 || !"query does not have same dimension as train set");
     }
-
-    size_t k = 100;                // topK of results per query
+/*
+    printf("content of the first query:\n");
+    for (int i = 0; i < d; i++) {
+        printf("%f\t", xq[i]);
+    }
+*/
     size_t k_max;                // topK of results per query in the GT
     faiss::Index::idx_t* gt; // nq * k matrix of ground-truth nearest-neighbors
 
@@ -116,8 +162,7 @@ int main(int argc, char *argv[]) {
 
         // load ground-truth and convert int to long
         size_t nq2;
-        int* gt_int = ivecs_read("sift1M/sift_groundtruth.ivecs", &k_max, &nq2);
-//k=k_max;
+        int* gt_int = ivecs_read(gt_dir.c_str(), &k_max, &nq2);
 printf("k=%d k_max=%d\n", k, k_max);
         assert(nq2 == nq || !"incorrect nb of ground truth entries");
 
@@ -129,7 +174,7 @@ printf("k=%d k_max=%d\n", k, k_max);
     }
 
     // Result of the auto-tuning
-    std::string selected_params = "nprobe=64";
+    std::string selected_params = std::string("nprobe=") + std::to_string(nprobe);
 
     { // Use the found configuration to perform a search
 
@@ -159,7 +204,7 @@ printf("k=%d k_max=%d\n", k, k_max);
         printf("[%.3f s] Compute recalls\n", elapsed() - t0);
 
         // evaluate result by hand.
-        int n_1 = 0, n_10 = 0, n_100 = 0;
+        int n_1 = 0, n_10 = 0, n_100 = 0, n_k = 0;
         for (int i = 0; i < nq; i++) {
             int gt_nn = gt[i * k_max];
             for (int j = 0; j < k; j++) {
@@ -170,15 +215,17 @@ printf("k=%d k_max=%d\n", k, k_max);
                         n_10++;
                     if (j < 100)
                         n_100++;
+                    n_k++;
                 }
 		else {
 //		    printf("gt: %d\treturned: %d\n", gt_nn, I[i * k + j]);
 		}
             }
         }
-        printf("R@1 = %.4f\n", n_1 / float(nq));
-        printf("R@10 = %.4f\n", n_10 / float(nq));
-        printf("R@100 = %.4f\n", n_100 / float(nq));
+        if (k >= 1) printf("R@1 = %.4f\n", n_1 / float(nq));
+        if (k >= 10) printf("R@10 = %.4f\n", n_10 / float(nq));
+        if (k >= 100) printf("R@100 = %.4f\n", n_100 / float(nq));
+        if (k != 1 && k != 10 && k != 100) printf("R@%d = %.4f\n", k, n_k / float(nq));
 
         delete[] I;
         delete[] D;
