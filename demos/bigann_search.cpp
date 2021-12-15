@@ -1,7 +1,7 @@
 /*
-  Usage: ./binary index_dir gt_dir topK nprobe
+  Usage: ./binary index_dir gt_dir topK nprobe (optional repeat_time)
   Example Usage:
-    ./build/demos/bigann_search /data/trained_CPU_indexes_python/bench_cpu_SIFT100M_OPQ16,IVF65536,PQ16/SIFT100M_OPQ16,IVF65536,PQ16_populated.index /data/Faiss_experiments/bigann/gnd/idx_100M.ivecs 100 64
+    ./build/demos/bigann_search /data/trained_CPU_indexes_python/bench_cpu_SIFT100M_OPQ16,IVF65536,PQ16/SIFT100M_OPQ16,IVF65536,PQ16_populated.index /data/Faiss_experiments/bigann/gnd/idx_100M.ivecs 100 64 1
  */
 
 #include <cassert>
@@ -22,6 +22,7 @@
 
 // Wenqi
 #include <faiss/IndexIVFPQ.h>
+#include <chrono>
 
 /**
  * To run this demo, please download the ANN_SIFT1M dataset from
@@ -115,10 +116,12 @@ double elapsed() {
 }
 
 int main(int argc, char *argv[]) {
-    double t0 = elapsed();
+    using milli = std::chrono::milliseconds;
+    auto t0 = std::chrono::high_resolution_clock::now();
+    //double t0 = elapsed();
 
-    if (argc != 5) {
-        printf("Usage: ./binary index_dir gt_dir topK nprobe\nExit\n");
+    if (argc < 5) {
+        printf("Usage: ./binary index_dir gt_dir topK nprobe (optional repeat_time) \nExit\n");
         exit(1);
     }
 
@@ -128,6 +131,8 @@ int main(int argc, char *argv[]) {
     // std::string gt_dir = "/data/Faiss_experiments/bigann/gnd/idx_1M.ivecs";
     int k = std::stoi(argv[3]);
     int nprobe = std::stoi(argv[4]);
+    int repeat_time = 1; // repeat the 10000 queries for N times to increase the performance measurement precision
+    if (argc >= 6) { repeat_time = std::stoi(argv[5]); }
 
     // faiss::IndexIVFPQ* index = (faiss::IndexIVFPQ*) faiss::read_index(index_dir.c_str());
     faiss::Index* index = faiss::read_index(index_dir.c_str());
@@ -135,12 +140,21 @@ int main(int argc, char *argv[]) {
 
     // printf("imbalance factor of the index: %f\n", index -> invlists -> imbalance_factor());
 
+    const size_t bigger_than_cachesize = 10 * 1024 * 1024;
+    long *p = new long[bigger_than_cachesize];
+    // Flush cacheline
+    for(int i = 0; i < bigger_than_cachesize; i++)
+    {
+       p[i] = rand();
+    }
+
     size_t d = 128;
     size_t nq;
     float* xq;
 
     {
-        printf("[%.3f s] Loading queries\n", elapsed() - t0);
+        printf("[%.3f s] Loading queries\n", std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0);
+        //printf("[%.3f s] Loading queries\n", elapsed() - t0);
 
         size_t d2;
         xq = bvecs_read("/data/Faiss_experiments/bigann/bigann_query.bvecs", &d2, &nq);
@@ -157,7 +171,8 @@ int main(int argc, char *argv[]) {
 
     {
         printf("[%.3f s] Loading ground truth for %ld queries\n",
-               elapsed() - t0,
+               std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0,
+               //elapsed() - t0,
                nq);
 
         // load ground-truth and convert int to long
@@ -181,13 +196,15 @@ printf("k=%d k_max=%d\n", k, k_max);
         faiss::ParameterSpace params;
 
         printf("[%.3f s] Setting parameter configuration \"%s\" on index\n",
-               elapsed() - t0,
+               std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0,
+               //elapsed() - t0,
                selected_params.c_str());
 
         params.set_index_parameters(index, selected_params.c_str());
 
         printf("[%.3f s] Perform a search on %ld queries\n",
-               elapsed() - t0,
+               std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0,
+               //elapsed() - t0,
                nq);
 
         // output buffers
@@ -195,13 +212,23 @@ printf("k=%d k_max=%d\n", k, k_max);
         float* D = new float[nq * k];
 	
 	// WENQI: use more iterations to help perf record performance
-        double t_before_search = elapsed();
-        index->search(nq, xq, k, D, I);
+        auto t_before_search = std::chrono::high_resolution_clock::now();
+        //double t_before_search = elapsed();
+        for (int rt = 0; rt < repeat_time; rt++) {
+            // Flush cacheline
+            for(int i = 0; i < bigger_than_cachesize; i++)
+            {  
+       		p[i] = 0;
+   	    }
+            index->search(nq, xq, k, D, I); 
+        }
 
-        double t_search = elapsed() - t_before_search;
-        double QPS = ((double) nq) / t_search;
+        double t_search = std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t_before_search).count() / 1000.0;
+        //double t_search = elapsed() - t_before_search;
+        double QPS = repeat_time * ((double) nq) / t_search;
         printf("[%.3f s] Search complete, QPS=%.3f\n", t_search, QPS);
-        printf("[%.3f s] Compute recalls\n", elapsed() - t0);
+        printf("[%.3f s] Compute recalls\n", std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0);
+        //printf("[%.3f s] Compute recalls\n", elapsed() - t0);
 
         // evaluate result by hand.
         int n_1 = 0, n_10 = 0, n_100 = 0, n_k = 0;
