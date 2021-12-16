@@ -113,4 +113,3 @@ for index_key in index_keys:
         username = getpass.getuser()
         os.system("sudo chown {username} {reportname}".format(username=username, reportname=reportname))
         os.system("sudo rm perf.data perf.data.old")
-
