@@ -42,7 +42,7 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== nprobe=1 ====
     (30.049, 33.187),
     # ==== nprobe=2 ====
-    (29.499, 34.275),
+    (29.126, 33.800),
     # ==== nprobe=4 ====
     (29.151, 34.390),
     # ==== nprobe=8 ====
