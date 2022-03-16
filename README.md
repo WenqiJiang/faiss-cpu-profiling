@@ -1,72 +1,111 @@
-# Faiss
+# Faiss-CPU-Profiling
 
-Faiss is a library for efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It also contains supporting code for evaluation and parameter tuning. Faiss is written in C++ with complete wrappers for Python/numpy. Some of the most useful algorithms are implemented on the GPU. It is developed by [Facebook AI Research](https://research.fb.com/category/facebook-ai-research-fair/).
+This repo is forked from Faiss. We use Perf to profile the performance of a range of index settings.
 
-## News
-
-See [CHANGELOG.md](CHANGELOG.md) for detailed information about latest features.
-
-## Introduction
-
-Faiss contains several methods for similarity search. It assumes that the instances are represented as vectors and are identified by an integer, and that the vectors can be compared with L2 (Euclidean) distances or dot products. Vectors that are similar to a query vector are those that have the lowest L2 distance or the highest dot product with the query vector. It also supports cosine similarity, since this is a dot product on normalized vectors.
-
-Most of the methods, like those based on binary vectors and compact quantization codes, solely use a compressed representation of the vectors and do not require to keep the original vectors. This generally comes at the cost of a less precise search but these methods can scale to billions of vectors in main memory on a single server.
-
-The GPU implementation can accept input from either CPU or GPU memory. On a server with GPUs, the GPU indexes can be used a drop-in replacement for the CPU indexes (e.g., replace `IndexFlatL2` with `GpuIndexFlatL2`) and copies to/from GPU memory are handled automatically. Results will be faster however if both input and output remain resident on the GPU. Both single and multi-GPU usage is supported.
-
-## Building
-
-The library is mostly implemented in C++, with optional GPU support provided via CUDA, and an optional Python interface. The CPU version requires a BLAS library. It compiles with a Makefile and can be packaged in a docker image. See [INSTALL.md](INSTALL.md) for details.
-
-## How Faiss works
-
-Faiss is built around an index type that stores a set of vectors, and provides a function to search in them with L2 and/or dot product vector comparison. Some index types are simple baselines, such as exact search. Most of the available indexing structures correspond to various trade-offs with respect to
-
-- search time
-- search quality
-- memory used per index vector
-- training time
-- need for external data for unsupervised training
-
-The optional GPU implementation provides what is likely (as of March 2017) the fastest exact and approximate (compressed-domain) nearest neighbor search implementation for high-dimensional vectors, fastest Lloyd's k-means, and fastest small k-selection algorithm known. [The implementation is detailed here](https://arxiv.org/abs/1702.08734).
-
-## Full documentation of Faiss
-
-The following are entry points for documentation:
-
-- the full documentation, including a [tutorial](https://github.com/facebookresearch/faiss/wiki/Getting-started), a [FAQ](https://github.com/facebookresearch/faiss/wiki/FAQ) and a [troubleshooting section](https://github.com/facebookresearch/faiss/wiki/Troubleshooting) can be found on the [wiki page](http://github.com/facebookresearch/faiss/wiki)
-- the [doxygen documentation](https://facebookresearch.github.io/faiss) gives per-class information
-- to reproduce results from our research papers, [Polysemous codes](https://arxiv.org/abs/1609.01882) and [Billion-scale similarity search with GPUs](https://arxiv.org/abs/1702.08734), refer to the [benchmarks README](benchs/README.md). For [
-Link and code: Fast indexing with graphs and compact regression codes](https://arxiv.org/abs/1804.09996), see the [link_and_code README](benchs/link_and_code)
-
-## Authors
-
-The main authors of Faiss are:
-- [Hervé Jégou](https://github.com/jegou) initiated the Faiss project and wrote its first implementation
-- [Matthijs Douze](https://github.com/mdouze) implemented most of the CPU Faiss
-- [Jeff Johnson](https://github.com/wickedfoo) implemented all of the GPU Faiss
-- [Lucas Hosseini](https://github.com/beauby) implemented the binary indexes
-
-## Reference
-
-Reference to cite when you use Faiss in a research paper:
+## Build from Source
 
 ```
-@article{JDH17,
-  title={Billion-scale similarity search with GPUs},
-  author={Johnson, Jeff and Douze, Matthijs and J{\'e}gou, Herv{\'e}},
-  journal={arXiv preprint arXiv:1702.08734},
-  year={2017}
-}
+git clone https://github.com/WenqiJiang/faiss-cpu-profiling
+cd faiss-cpu-profiling
+
+# install Anaconda, and create a env using python3.7
+conda create -n faiss_build python=3.7
+conda activate faiss_build
+
+install cmake: https://vitux.com/how-to-install-cmake-on-ubuntu/
+install openblas:
+sudo apt-get install libopenblas-dev
+if install python interface, install swig: conda install -c anaconda swig
+
+install faiss: https://github.com/facebookresearch/faiss/blob/main/INSTALL.md
+build command (some of these options can be removed):
+cmake -B build . -DFAISS_ENABLE_GPU=OFF -DCMAKE_BUILD_TYPE=Release -DFAISS_OPT_LEVEL=avx2 
+# for GPU, the options can be (V100 has compute capability 7.0): 
+cmake -B build . -DCMAKE_BUILD_TYPE=Release -DFAISS_OPT_LEVEL=avx2 -DCUDAToolkit_ROOT=/usr/local/cuda-11.4/ -DCMAKE_CUDA_ARCHITECTURES="70"
+
+# follow the rest install instruction
+# demo test is also introduced in the install part
+make -C build -j faiss
+make -C build -j swigfaiss
+(cd build/faiss/python && python setup.py install)
+make -C build install
+make -C build test
+
+after adding a new file to demo:
+(1) add its to demo/CMakefile list
+(2) then rerun build
+cmake -B build . -DFAISS_ENABLE_GPU=OFF -DCMAKE_BUILD_TYPE=Release -DFAISS_OPT_LEVEL=avx2 -DFAISS_ENABLE_PYTHON=OFF 
+then do the build:
+make -C build demo_sift1M_read_index
+
+include #include <faiss/index_io.h> when using read_index and write_index
+
+# building demo c++ programs
+cd /mnt/scratch/wenqi/faiss/
+make -C build demo_sift1M_read_index
+./build/demos/demo_sift1M_read_index ../trained_CPU_indexes_C/SIFT1M_IVF1024,PQ16_populated_index 
 ```
 
-## Join the Faiss community
+## CPU Profiling Scripts
 
-For public discussion of Faiss or for questions, there is a Facebook group at https://www.facebook.com/groups/faissusers/
+```
+cd faiss-cpu-profiling
+make -C build bigann_search
+cd MICRO_CPU_profiling/
 
-We monitor the [issues page](http://github.com/facebookresearch/faiss/issues) of the repository.
-You can report bugs, ask questions, etc.
+# run all the scripts, e.g., for 100M
+# experiment 4~5's index depends on which index performs the best in experiment 2
+python experiment_2_algorithm_settings.py --dbname SIFT100M --topK 100 --recall_goal 0.95 --qbs 10000 --repeat_time 1 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+      --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+      --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+      --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT100M.pkl' --perf_enable 1
 
-## License
 
-Faiss is MIT-licensed.
+python experiment_3_nlist.py --dbname SIFT100M --topK 100 --nprobe 16 --qbs 10000 --repeat_time 1 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+          --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+          --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+          --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT100M.pkl' --perf_enable 1
+     
+python experiment_4_nprobe.py --dbname SIFT100M --index_key OPQ16,IVF65536,PQ16 --topK 100 --min_nprobe 1 --max_nprobe 128 --qbs 10000 --repeat_time 10 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+      --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+      --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+      --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT100M.pkl' --perf_enable 1
+      
+python experiment_5_topK.py --dbname SIFT100M --index_key OPQ16,IVF65536,PQ16  --nprobe 51 --qbs 10000 --repeat_time 10 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+          --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+          --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+          --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT100M.pkl' --perf_enable 1
+          
+# For SIFT 1000M
+# experiment 4~5's index depends on which index performs the best in experiment 2
+python experiment_2_algorithm_settings.py --dbname SIFT1000M --topK 100 --recall_goal 0.95 --qbs 10000 --repeat_time 1 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+      --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+      --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+      --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT1000M.pkl' --perf_enable 1
+
+python experiment_3_nlist.py --dbname SIFT1000M --topK 100 --nprobe 16 --qbs 10000 --repeat_time 1 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+          --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+          --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+          --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT1000M.pkl' --perf_enable 1
+     
+python experiment_4_nprobe.py --dbname SIFT1000M --index_key OPQ16,IVF262144,PQ16 --topK 100 --min_nprobe 1 --max_nprobe 128 --qbs 10000 --repeat_time 10 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+      --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+      --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+      --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT1000M.pkl' --perf_enable 1
+      
+python experiment_5_topK.py --dbname SIFT1000M --index_key OPQ16,IVF262144,PQ16  --nprobe 51 --qbs 10000 --repeat_time 10 \
+      --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
+          --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
+          --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
+          --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT1000M.pkl' --perf_enable 1
+    
+# when plotting, note that: (1) the perf records the entire program, thus please remove the head & tail, the middle time can be viewed in the log generated in the result_xxxx folder
+
+```
