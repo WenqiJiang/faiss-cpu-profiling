@@ -9,13 +9,15 @@ from analyze_perf import group_perf_by_events, filter_events_after_timestamp, \
 from profiling_stages import draw_profiling_plot
 
 
-x_labels = ['IVF1024', 'IVF1024\nw/ OPQ', \
-    'IVF2048', 'IVF2048\nw/ OPQ', \
-    'IVF4096', 'IVF4096\nw/ OPQ', \
-    'IVF8192', 'IVF8192\nw/ OPQ', \
-    'IVF16384', 'IVF16384\nw/ OPQ', \
-    'IVF32768', 'IVF32768\nw/ OPQ', \
-    'IVF65536', 'IVF65536\nw/ OPQ']
+x_labels = ['IVF1024\nnprobe=16', 'OPQ,IVF1024\nnprobe=13', \
+    'IVF2048\nnprobe=17', 'OPQ,IVF2048\nnprobe=14', \
+    'IVF4096\nnprobe=21', 'OPQ,IVF4096\nnprobe=18', \
+    'IVF8192\nnprobe=26', 'OPQ,IVF8192\nnprobe=25', \
+    'IVF16384\nnprobe=34', 'OPQ,IVF16384\nnprobe=31', \
+    'IVF32768\nnprobe=37', 'OPQ,IVF32768\nnprobe=35', \
+    'IVF65536\nnprobe=51', 'OPQ,IVF65536\nnprobe=50', \
+    'IVF131072\nnprobe=64', 'OPQ,IVF131072\nnprobe=61', \
+    'IVF262144\nnprobe=90', 'OPQ,IVF262144\nnprobe=86']
 
 file_prefixes = [ \
     'perf.out_SIFT1000M_IVF1024,PQ16_R@100=0.95_nprobe_16_qbs_10000', \
@@ -31,13 +33,17 @@ file_prefixes = [ \
     'perf.out_SIFT1000M_IVF32768,PQ16_R@100=0.95_nprobe_37_qbs_10000', \
     'perf.out_SIFT1000M_OPQ16,IVF32768,PQ16_R@100=0.95_nprobe_35_qbs_10000', \
     'perf.out_SIFT1000M_IVF65536,PQ16_R@100=0.95_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_OPQ16,IVF65536,PQ16_R@100=0.95_nprobe_50_qbs_10000']
+    'perf.out_SIFT1000M_OPQ16,IVF65536,PQ16_R@100=0.95_nprobe_50_qbs_10000', \
+    'perf.out_SIFT1000M_IVF131072,PQ16_R@100=0.95_nprobe_64_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF131072,PQ16_R@100=0.95_nprobe_61_qbs_10000', \
+    'perf.out_SIFT1000M_IVF262144,PQ16_R@100=0.95_nprobe_90_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_R@100=0.95_nprobe_86_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
 path_prefixes = []
 for p in file_prefixes:
-    path_prefixes.append(os.path.join('result_experiment_2_algorithm_settings', p))
+    path_prefixes.append(os.path.join('../result_experiment_2_algorithm_settings', p))
 
 # time range of the search function, according to the search log, e.g.,
     # time_bias_start = 135.656
@@ -70,7 +76,15 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== IVF65536,PQ16 ====
     (28.327, 32.994),
     # ==== OPQ16,IVF65536,PQ16 ====
-    (135.239, 141.575)]
+    (135.239, 141.575),
+    # ==== IVF131072,PQ16 ====
+    (33.900, 37.819),
+    # ==== OPQ16,IVF131072,PQ16 ====
+    (33.665, 37.485),
+    # ==== IVF262144,PQ16 ====
+    (28.138, 31.533),
+    # ==== OPQ16,IVF262144,PQ16 ====
+    (28.112, 31.429)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -103,5 +117,5 @@ y_stage_5 = [r[3] for r in profile_perc_array]
 y_stage_6 = [r[4] for r in profile_perc_array]
 y_other = [r[5] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_2_algorithm_settings', x_tick_rotation=70)
+draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_2_algorithm_settings_SIFT1000M', x_tick_rotation=70)
 

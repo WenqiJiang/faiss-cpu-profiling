@@ -5,12 +5,12 @@ import pickle
 
 plt.style.use('ggplot')
 
-# SIFT1000M, K=100
-y_no_OPQ = np.array([118, 227, 366, 582, 854, 1455, 2142])
-y_OPQ = np.array([153, 270, 427, 599, 936, 1604, 1578])
+# SIFT100M, K=100
+y_no_OPQ = np.array([1500, 2103, 2533, 5359, 5903, 7468, 7032, 7194, 553])
+y_OPQ = np.array([1509, 2446, 3423, 3561, 5649, 6954, 7794, 7390, 2950])
 
-x_labels = ['nlist=1024', 'nlist=2048', 'nlist=4096',\
-    'nlist=8192', 'nlist=16384', 'nlist=32768', 'nlist=65536']
+x_labels = ['nlist=1024', 'nlist=2048', 'nlist=4096','nlist=8192', \
+    'nlist=16384', 'nlist=32768', 'nlist=65536', 'nlist=131072', 'nlist=262144']
 
 x = np.arange(len(x_labels))  # the label locations
 width = 0.3  # the width of the bars    
@@ -21,12 +21,12 @@ min_speedup = np.amin(speedup_array)
 print("Speedup OPQ over no OPQ:\n{}\nmax: {:.2f}x\nmin: {:.2f}x".format(speedup_array, max_speedup, min_speedup))
 # e.g.,
 # Speedup OPQ over no OPQ:
-# [1.29661017 1.18942731 1.16666667 1.02920962 1.09601874 1.1024055
-#  0.73669468]
-# max: 1.30x
-# min: 0.74x
+# [1.006      1.16310033 1.35136202 0.66448964 0.95697103 0.931173
+#  1.10836177 1.02724493 5.33453888]
+# max: 5.33x
+# min: 0.66x
 
-fig, ax = plt.subplots(1, 1, figsize=(8, 2))
+fig, ax = plt.subplots(1, 1, figsize=(12, 2))
 # 
 rects1  = ax.bar(x - width / 2, y_no_OPQ, width)#, label='Men')
 rects2   = ax.bar(x + width / 2, y_OPQ, width)#, label='Women')
@@ -87,5 +87,5 @@ ax.set(ylim=[0, np.amax(y_OPQ) * 1.5])
 
 plt.rcParams.update({'figure.autolayout': True})
 
-plt.savefig('./out_img/cpu_throughput_experiment_2_algorithm_settings.png', transparent=False, dpi=200, bbox_inches="tight")
+plt.savefig('./out_img/cpu_throughput_experiment_2_algorithm_settings_SIFT100M.png', transparent=False, dpi=200, bbox_inches="tight")
 plt.show()
