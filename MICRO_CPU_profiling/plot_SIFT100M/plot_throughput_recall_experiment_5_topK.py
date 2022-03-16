@@ -16,9 +16,9 @@ def get_default_colors():
 
 default_colors = get_default_colors()
 
-# SIFT1000M, IVF65536, nprobe=51 (R@100=95%)
-y_QPS = np.array([2471, 2531, 2520, 2462, 2554, 2492, 2509, 2420])
-y_recall = np.array([0.3066, 0.7707, 0.8597, 0.9277, 0.9505, 0.9601, 0.9631, 0.9632]) * 100
+# SIFT100M, IVF65536, nprobe=51 (R@100=95%)
+y_QPS = np.array([4649, 7588, 5110, 8448, 5902, 6673, 4154, 5140])
+y_recall = np.array([0.3749, 0.8275, 0.8910, 0.9292, 0.9364, 0.9382, 0.9386, 0.9387]) * 100
 
 x_labels = ['topK=1', 'topK=10', 'topK=20', 'topK=50',\
     'topK=100', 'topK=200', 'topK=500', 'topK=1000']
@@ -28,7 +28,7 @@ width = 0.3  # the width of the bars
 
 # fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(8, 2))
 
-fig, ax0 = plt.subplots(1, 1, figsize=(8, 2))
+fig, ax0 = plt.subplots(1, 1, figsize=(12, 2))
 ax1 = ax0.twinx()
 
 label_font = 12
@@ -76,5 +76,5 @@ ax0.set(ylim=[0, np.amax(y_QPS) * 1.2])
 
 plt.rcParams.update({'figure.autolayout': True})
 
-plt.savefig('./out_img/cpu_throughput_recall_experiment_5_topK.png', transparent=False, dpi=200, bbox_inches="tight")
+plt.savefig('./out_img/cpu_throughput_recall_experiment_5_topK_SIFT100M.png', transparent=False, dpi=200, bbox_inches="tight")
 plt.show()

@@ -9,30 +9,30 @@ from analyze_perf import group_perf_by_events, filter_events_after_timestamp, \
 from profiling_stages import draw_profiling_plot
 
 
-x_labels = ['IVF65536\nnprobe=1', \
-    'IVF65536\nnprobe=2', \
-    'IVF65536\nnprobe=4', \
-    'IVF65536\nnprobe=8', \
-    'IVF65536\nnprobe=16', \
-    'IVF65536\nnprobe=32', \
-    'IVF65536\nnprobe=64', \
-    'IVF65536\nnprobe=128']
+x_labels = ['OPQ16,IVF262144\nnprobe=1', \
+    'OPQ16,IVF262144\nnprobe=2', \
+    'OPQ16,IVF262144\nnprobe=4', \
+    'OPQ16,IVF262144\nnprobe=8', \
+    'OPQ16,IVF262144\nnprobe=16', \
+    'OPQ16,IVF262144\nnprobe=32', \
+    'OPQ16,IVF262144\nnprobe=64', \
+    'OPQ16,IVF262144\nnprobe=128']
 
 file_prefixes = [ \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_1_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_2_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_4_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_8_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_32_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_64_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_128_qbs_10000']
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_1_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_2_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_4_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_8_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_32_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_64_qbs_10000', \
+    'perf.out_SIFT1000M_OPQ16,IVF262144,PQ16_K_100_nprobe_128_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
 path_prefixes = []
 for p in file_prefixes:
-    path_prefixes.append(os.path.join('result_experiment_4_nprobe', p))
+    path_prefixes.append(os.path.join('../result_experiment_4_nprobe', p))
 
 
 # time range of the search function, according to the search log, e.g.,
@@ -40,21 +40,21 @@ for p in file_prefixes:
     # time_bias_end = 200.659
 time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== nprobe=1 ====
-    (30.049, 33.187),
+    (28.157, 36.409),
     # ==== nprobe=2 ====
-    (29.126, 33.800),
+    (28.017, 35.706),
     # ==== nprobe=4 ====
-    (29.151, 34.390),
+    (27.268, 35.276),
     # ==== nprobe=8 ====
-    (29.666, 38.968),
+    (28.237, 37.730),
     # ==== nprobe=16 ====
-    (29.486, 44.315),
+    (27.252, 38.686),
     # ==== nprobe=32 ====
-    (29.723, 55.883),
+    (27.234, 43.001),
     # ==== nprobe=64 ====
-    (28.787, 76.812),
+    (27.344, 52.246),
     # ==== nprobe=128 ====
-    (29.556, 120.375)]
+    (27.443, 69.042)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -87,5 +87,5 @@ y_stage_5 = [r[3] for r in profile_perc_array]
 y_stage_6 = [r[4] for r in profile_perc_array]
 y_other = [r[5] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe_SIFT1000M', x_tick_rotation=45)
 

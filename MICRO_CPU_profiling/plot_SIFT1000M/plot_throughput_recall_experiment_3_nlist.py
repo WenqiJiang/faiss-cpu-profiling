@@ -16,19 +16,19 @@ def get_default_colors():
 
 default_colors = get_default_colors()
 
-# SIFT1000M, K=100, nprobe=16, without OPQ
-y_QPS = np.array([125, 242, 469, 894, 1728, 3289, 5268])
-y_recall = np.array([0.9509, 0.9496, 0.9368, 0.9252, 0.9060, 0.8940, 0.8676]) * 100
+# SIFT1000M, K=100, nprobe=16, without OPQ 
+y_QPS = np.array([125, 242, 469, 894, 1728, 3289, 5268, 6734, 4420])
+y_recall = np.array([0.9509, 0.9496, 0.9368, 0.9252, 0.9060, 0.8940, 0.8676, 0.8352, 0.8030]) * 100
 
-x_labels = ['nlist=1024', 'nlist=2048', 'nlist=4096',\
-    'nlist=8192', 'nlist=16384', 'nlist=32768', 'nlist=65536']
+x_labels = ['nlist=1024', 'nlist=2048', 'nlist=4096','nlist=8192', \
+    'nlist=16384', 'nlist=32768', 'nlist=65536', 'nlist=131072', 'nlist=262144']
 
 x = np.arange(len(x_labels))  # the label locations
 width = 0.3  # the width of the bars    
 
 # fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(8, 2))
 
-fig, ax0 = plt.subplots(1, 1, figsize=(8, 2))
+fig, ax0 = plt.subplots(1, 1, figsize=(12, 2))
 ax1 = ax0.twinx()
 
 label_font = 12
@@ -76,5 +76,5 @@ ax0.set(ylim=[0, np.amax(y_QPS) * 1.2])
 
 plt.rcParams.update({'figure.autolayout': True})
 
-plt.savefig('./out_img/cpu_throughput_recall_experiment_3_nlist.png', transparent=False, dpi=200, bbox_inches="tight")
+plt.savefig('./out_img/cpu_throughput_recall_experiment_3_nlist_SIFT1000M.png', transparent=False, dpi=200, bbox_inches="tight")
 plt.show()

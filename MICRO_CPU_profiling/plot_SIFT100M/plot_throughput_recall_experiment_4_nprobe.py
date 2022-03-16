@@ -16,9 +16,9 @@ def get_default_colors():
 
 default_colors = get_default_colors()
 
-# SIFT1000M, R@100 recall
-y_QPS = np.array([31867, 20938, 19087, 10750, 6743, 3822, 2082, 1101])
-y_recall = np.array([0.3465, 0.4892, 0.6370, 0.7658, 0.8676, 0.9250, 0.9584, 0.9742]) * 100
+# SIFT100M, R@100 recall
+y_QPS = np.array([32404, 30293, 20648, 15583, 8079, 7314, 3716, 2962])
+y_recall = np.array([0.2876, 0.4274, 0.5693, 0.7038, 0.8190, 0.9011, 0.9511, 0.9803]) * 100
 
 x_labels = ['nprobe=1', 'nprobe=2', 'nprobe=4',\
     'nprobe=8', 'nprobe=16', 'nprobe=32', 'nprobe=64', 'nprobe=128']
@@ -28,7 +28,7 @@ width = 0.3  # the width of the bars
 
 # fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(8, 2))
 
-fig, ax0 = plt.subplots(1, 1, figsize=(8, 2))
+fig, ax0 = plt.subplots(1, 1, figsize=(12, 2))
 ax1 = ax0.twinx()
 
 label_font = 12
@@ -76,5 +76,5 @@ ax0.set(ylim=[0, np.amax(y_QPS) * 1.1])
 
 plt.rcParams.update({'figure.autolayout': True})
 
-plt.savefig('./out_img/cpu_throughput_recall_experiment_4_nprobe.png', transparent=False, dpi=200, bbox_inches="tight")
+plt.savefig('./out_img/cpu_throughput_recall_experiment_4_nprobe_SIFT100M.png', transparent=False, dpi=200, bbox_inches="tight")
 plt.show()

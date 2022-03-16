@@ -15,55 +15,67 @@ x_labels = ['IVF1024\nnprobe=16', \
     'IVF8192\nnprobe=16', \
     'IVF16384\nnprobe=16', \
     'IVF32768\nnprobe=16', \
-    'IVF65536\nnprobe=16']
+    'IVF65536\nnprobe=16', \
+    'IVF131072\nnprobe=16', \
+    'IVF262144\nnprobe=16']
 
 file_prefixes = [ \
-    'perf.out_SIFT1000M_IVF1024,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF2048,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF4096,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF8192,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF16384,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF32768,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000']
+    'perf.out_SIFT100M_IVF1024,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF2048,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF4096,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF8192,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF16384,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF32768,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF131072,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT100M_IVF262144,PQ16_K_100_nprobe_16_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
 path_prefixes = []
 for p in file_prefixes:
-    path_prefixes.append(os.path.join('result_experiment_3_nlist', p))
+    path_prefixes.append(os.path.join('../result_experiment_3_nlist', p))
 
 # time range of the search function, according to the search log, e.g.,
     # time_bias_start = 135.656
     # time_bias_end = 200.659
 time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== IVF1024,PQ16 ====
-    (25.614 , 105.094),
+    (2.807 , 11.893),
     # ==== IVF2048,PQ16 ====
-    (133.937, 175.191),
+    (2.915, 8.534),
     # ==== IVF4096,PQ16 ====
-    (78.952, 100.255),
+    (3.018, 5.739),
     # ==== IVF8192,PQ16 ====
-    (24.153, 35.327),
+    (3.364, 4.672),
     # ==== IVF16384,PQ16 ====
-    (69.133, 74.918),
+    (3.937, 4.827),
     # ==== IVF32768,PQ16 ====
-    (85.616, 88.656),
+    (4.824, 5.783),
     # ==== IVF65536,PQ16 ====
-    (28.122, 30.020),
+    (6.821, 7.675),
+    # ==== IVF131072,PQ16 ====
+    (10.458, 11.656),
+    # ==== IVF262144,PQ16 ====
+    (3.985, 20.681),
     # ==== OPQ16,IVF1024,PQ16 ====
-    (136.694, 216.113),
+    (2.722, 11.790),
     # ==== OPQ16,IVF2048,PQ16 ====
-    (144.551, 186.266),
+    (2.933, 7.308),
     # ==== OPQ16,IVF4096,PQ16 ====
-    (92.206, 112.987),
+    (3.033, 5.811),
     # ==== OPQ16,IVF8192,PQ16 ====
-    (89.147, 100.082),
+    (3.309, 4.886),
     # ==== OPQ16,IVF16384,PQ16 ====
-    (137.739, 143.738),
+    (3.872, 4.932),
     # ==== OPQ16,IVF32768,PQ16 ====
-    (124.490, 127.577),
+    (4.847, 5.612),
     # ==== OPQ16,IVF65536,PQ16 ====
-    (57.015, 58.795)]
+    (6.733, 7.484),
+    # ==== OPQ16,IVF131072,PQ16 ====
+    (10.298, 11.359),
+    # ==== OPQ16,IVF262144,PQ16 ====
+    (4.017, 21.640)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -96,5 +108,5 @@ y_stage_5 = [r[3] for r in profile_perc_array]
 y_stage_6 = [r[4] for r in profile_perc_array]
 y_other = [r[5] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist_SIFT100M', x_tick_rotation=45)
 

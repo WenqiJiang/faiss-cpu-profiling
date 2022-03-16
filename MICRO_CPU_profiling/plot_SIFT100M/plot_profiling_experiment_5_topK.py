@@ -9,30 +9,30 @@ from analyze_perf import group_perf_by_events, filter_events_after_timestamp, \
 from profiling_stages import draw_profiling_plot
 
 
-x_labels = ['IVF65536\ntopK=1', \
-    'IVF65536\ntopK=10', \
-    'IVF65536\ntopK=20', \
-    'IVF65536\ntopK=50', \
-    'IVF65536\ntopK=100', \
-    'IVF65536\ntopK=200', \
-    'IVF65536\ntopK=500', \
-    'IVF65536\ntopK=1000']
+x_labels = ['OPQ16,IVF65536\ntopK=1', \
+    'OPQ16,IVF65536\ntopK=10', \
+    'OPQ16,IVF65536\ntopK=20', \
+    'OPQ16,IVF65536\ntopK=50', \
+    'OPQ16,IVF65536\ntopK=100', \
+    'OPQ16,IVF65536\ntopK=200', \
+    'OPQ16,IVF65536\ntopK=500', \
+    'OPQ16,IVF65536\ntopK=1000']
 
 file_prefixes = [ \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_1_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_10_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_20_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_50_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_200_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_500_nprobe_51_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_1000_nprobe_51_qbs_10000']
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_10_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_20_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_50_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_100_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_200_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_500_nprobe_51_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1000_nprobe_51_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
 path_prefixes = []
 for p in file_prefixes:
-    path_prefixes.append(os.path.join('result_experiment_5_topK', p))
+    path_prefixes.append(os.path.join('../result_experiment_5_topK', p))
 
 
 # time range of the search function, according to the search log, e.g.,
@@ -40,21 +40,21 @@ for p in file_prefixes:
     # time_bias_end = 200.659
 time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== topK=1 ====
-    (29.905, 70.366),
+    (6.780, 28.286),
     # ==== topK=10 ====
-    (29.049, 68.554),
+    (6.729, 19.908),
     # ==== topK=20 ====
-    (28.837, 68.518),
+    (8.408, 27.977),
     # ==== topK=50 ====
-    (29.748, 70.364),
+    (8.361, 20.198),
     # ==== topK=100 ====
-    (29.285, 68.431),
+    (6.712, 23.654),
     # ==== topK=200 ====
-    (28.966, 69.081),
+    (6.801, 21.787),
     # ==== topK=500 ====
-    (29.086, 68.934),
+    (9.370, 33.442),
     # ==== topK=1000 ====
-    (29.727, 71.050)]
+    (6.823, 26.276)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -87,4 +87,4 @@ y_stage_5 = [r[3] for r in profile_perc_array]
 y_stage_6 = [r[4] for r in profile_perc_array]
 y_other = [r[5] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_5_topK', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_5_topK_SIFT100M', x_tick_rotation=45)

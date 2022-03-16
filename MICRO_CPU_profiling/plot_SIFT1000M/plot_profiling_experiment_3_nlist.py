@@ -15,7 +15,9 @@ x_labels = ['IVF1024\nnprobe=16', \
     'IVF8192\nnprobe=16', \
     'IVF16384\nnprobe=16', \
     'IVF32768\nnprobe=16', \
-    'IVF65536\nnprobe=16']
+    'IVF65536\nnprobe=16', \
+    'IVF131072\nnprobe=16', \
+    'IVF262144\nnprobe=16']
 
 file_prefixes = [ \
     'perf.out_SIFT1000M_IVF1024,PQ16_K_100_nprobe_16_qbs_10000', \
@@ -24,13 +26,15 @@ file_prefixes = [ \
     'perf.out_SIFT1000M_IVF8192,PQ16_K_100_nprobe_16_qbs_10000', \
     'perf.out_SIFT1000M_IVF16384,PQ16_K_100_nprobe_16_qbs_10000', \
     'perf.out_SIFT1000M_IVF32768,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000']
+    'perf.out_SIFT1000M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT1000M_IVF131072,PQ16_K_100_nprobe_16_qbs_10000', \
+    'perf.out_SIFT1000M_IVF262144,PQ16_K_100_nprobe_16_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
 path_prefixes = []
 for p in file_prefixes:
-    path_prefixes.append(os.path.join('result_experiment_3_nlist', p))
+    path_prefixes.append(os.path.join('../result_experiment_3_nlist', p))
 
 # time range of the search function, according to the search log, e.g.,
     # time_bias_start = 135.656
@@ -50,6 +54,10 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     (85.616, 88.656),
     # ==== IVF65536,PQ16 ====
     (28.122, 30.020),
+    # ==== IVF131072,PQ16 ====
+    (33.747, 35.233),
+    # ==== IVF262144,PQ16 ====
+    (27.505, 29.768),
     # ==== OPQ16,IVF1024,PQ16 ====
     (136.694, 216.113),
     # ==== OPQ16,IVF2048,PQ16 ====
@@ -63,7 +71,11 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== OPQ16,IVF32768,PQ16 ====
     (124.490, 127.577),
     # ==== OPQ16,IVF65536,PQ16 ====
-    (57.015, 58.795)]
+    (57.015, 58.795),
+    # ==== OPQ16,IVF131072,PQ16 ====
+    (33.741, 35.117),
+    # ==== OPQ16,IVF262144,PQ16 ====
+    (27.414, 28.852)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -96,5 +108,5 @@ y_stage_5 = [r[3] for r in profile_perc_array]
 y_stage_6 = [r[4] for r in profile_perc_array]
 y_other = [r[5] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist_SIFT1000M', x_tick_rotation=45)
 
