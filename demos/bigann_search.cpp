@@ -226,7 +226,7 @@ printf("k=%d k_max=%d\n", k, k_max);
         double t_search = std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t_before_search).count() / 1000.0;
         //double t_search = elapsed() - t_before_search;
         double QPS = repeat_time * ((double) nq) / t_search;
-        printf("[%.3f s] Search complete, QPS=%.3f\n", t_search, QPS);
+        printf("Search complete, takes [%.3f s],  QPS=%.3f\n", t_search, QPS);
         printf("[%.3f s] Compute recalls\n", std::chrono::duration_cast<milli>(std::chrono::high_resolution_clock::now() - t0).count() / 1000.0);
         //printf("[%.3f s] Compute recalls\n", elapsed() - t0);
 
