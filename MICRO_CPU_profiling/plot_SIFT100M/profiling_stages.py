@@ -72,7 +72,7 @@ def draw_profiling_plot(
 
     ax.legend([rects_stage_1_4, rects_stage_5, rects_stage_6, rects_other], 
         ["Stage 1~4: OPQ + vector quantizer + select centroids + construct distance LUT", \
-        "Stage 5: scan PQ codes", "Stage 6: collect topK results", "Other"], loc=(-0.1, 1.05), ncol=3, \
+        "Stage 5: scan PQ codes", "Stage 6: collect topK results", "Other"], loc=(-0.1, 1.05), ncol=2, \
       facecolor='white', framealpha=1, frameon=False, fontsize=legend_font)
 
 

@@ -17,8 +17,8 @@ def get_default_colors():
 default_colors = get_default_colors()
 
 # SIFT100M, IVF65536, nprobe=51 (R@100=95%)
-y_QPS = np.array([4649, 7588, 5110, 8448, 5902, 6673, 4154, 5140])
-y_recall = np.array([0.3749, 0.8275, 0.8910, 0.9292, 0.9364, 0.9382, 0.9386, 0.9387]) * 100
+y_QPS = np.array([8438, 8726, 8873, 8244, 7794, 7757, 6811, 5347])
+y_recall = np.array([0.3768, 0.8380, 0.9033, 0.9433, 0.9511, 0.9528, 0.9533, 0.9534]) * 100
 
 x_labels = ['topK=1', 'topK=10', 'topK=20', 'topK=50',\
     'topK=100', 'topK=200', 'topK=500', 'topK=1000']
@@ -41,7 +41,7 @@ rects = ax0.bar(x, y_QPS, width, color=default_colors[0])
 line, = ax1.plot(x, y_recall, marker='X', markersize=10, color=default_colors[1])
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
-ax1.set_ylabel('Recall (%)', fontsize=label_font)
+ax1.set_ylabel('Recall@topK (%)', fontsize=label_font)
 ax0.set_ylabel('QPS', fontsize=label_font)
 ax0.set_xticks(x)
 ax0.set_xticklabels(x_labels, fontsize=tick_label_font)

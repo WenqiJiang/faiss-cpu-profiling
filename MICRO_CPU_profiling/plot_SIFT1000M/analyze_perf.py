@@ -331,7 +331,7 @@ class ThreadTrack:
     def get_time_consumption_dict(self):
         return self.time_consumption_per_func
 
-def classify_events_by_stages(events, track_non_faiss_func=True):
+def classify_events_by_stages(events, track_non_faiss_func=True, remove_unrecognized_faiss_function=False):
     """
     Given a set of events, 
         first aggregate the time consumption by function names
@@ -374,66 +374,100 @@ def classify_events_by_stages(events, track_non_faiss_func=True):
     time_consumption_all_threads_arr = sorted(time_consumption_all_threads_arr, key=lambda tup: tup[1], reverse=True)
 
 
-    t_1_2 = 0
-    t_3 = 0
-    t_4 = 0
+    t_1_4 = 0
     t_5 = 0
     t_6 = 0
     t_other = 0
 
-    print("\nAll threads time consumption:")
-    for fname, time in time_consumption_all_threads_arr:
-        print("func: {}\ttime: {} sec".format(fname, time))
-        if "::knn_L2sqr" in fname or \
+
+    def get_stage(fname):
+        """ Return which stage the faiss function belongs to """
+        
+        # S 1~2
+        if \
+            "::knn_L2sqr" in fname or \
             "::stage_1_2_sgemm" in fname or \
             "::search" in fname and "::search_preassigned" not in fname:
-            t_1_2 += time
-        elif "::search_preassigned" in fname or \
+            return 't_1_4'
+        # S 3
+        elif \
+            "::search_preassigned" in fname or \
             "::add_results" in fname or \
             "::operator()" in fname:
-            t_3 += time
-        elif "::fvec_madd" in fname or \
+            return 't_1_4'
+        # S 4
+        elif \
+            "::fvec_madd" in fname or \
             "::fvec_inner_product_ref" in fname or \
             "::ArrayInvertedLists::list_size" in fname or \
             "::fvec_inner_products_ny_ref" in fname or \
             "::fvec_norm_L2sqr" in fname or \
             "::fvec_norms_L2sqr" in fname or \
             "::precompute_list_tables" in fname or \
-            "::faiss::stage_4_sgemm" in fname:
-            t_4 += time
+            "::faiss::stage_4_sgemm" in fname or \
+            "compute_distance_table" in fname: 
+            return 't_1_4'
+        # S 1~4 but unknown which
+        elif \
+            "sgemm" in fname or \
+            "inner_prod" in fname or \
+            "L2sqr" in fname or \
+            "compute_residual" in fname:
+            return 't_1_4'
         elif "::scan_codes" in fname or \
             "::get_codes" in fname or \
             "::set_list" in fname:
-            t_5 += time
-        elif "::add" in fname and "::add_results" not in fname:
-            t_6 += time
+            return 't_5'
+        elif "::add" in fname and "::add_results" not in fname or \
+            "Heap" in fname:
+            return 't_6'
         else:
+            return 't_other'
+
+    print("\nAll threads time consumption:")
+    faiss_func_set = set()
+    for fname, time in time_consumption_all_threads_arr:
+        print("func: {}\ttime: {} sec".format(fname, time))
+        stage = get_stage(fname)
+        if stage == 't_1_4':
+            t_1_4 += time
+        elif stage == 't_5':
+            t_5 += time
+        elif stage == 't_6':
+            t_6 += time
+        elif stage == 't_other':
             t_other += time
+        faiss_func_set.add(fname)
+
+    print("All faiss functions:")
+    for f in faiss_func_set:
+        print("stage: {}\t{}".format(get_stage(f), f))
 
     print("\nTime consumption per stage:")
-    print("S1~2: {:.4f} sec".format(t_1_2))
-    print("S3: {:.4f} sec\t".format(t_3))
-    print("S4: {:.4f} sec\t".format(t_4))
+    print("S1~4: {:.4f} sec".format(t_1_4))
     print("S5: {:.4f} sec\t".format(t_5))
     print("S6: {:.4f} sec\t".format(t_6))
     print("other: {:.4f} sec\t".format(t_other))
 
-    return t_1_2, t_3, t_4, t_5, t_6, t_other
+    if remove_unrecognized_faiss_function:
+        print("Warning: For faiss functions with names that we cannot identify, we discard the time consumption!")
+        t_other = 0
+        print("other: {:.4f} sec\t".format(t_other))
+
+    return t_1_4, t_5, t_6, t_other
 
 
-def get_percentage(t_1_2, t_3, t_4, t_5, t_6, t_other):
+def get_percentage(t_1_4, t_5, t_6, t_other):
 
-    t_total = t_1_2 + t_3 + t_4 + t_5 + t_6 + t_other
+    t_total = t_1_4 + t_5 + t_6 + t_other
 
     # 0 ~ 100%
-    p_1_2 = t_1_2 / t_total * 100
-    p_3 = t_3 / t_total * 100
-    p_4 = t_4 / t_total * 100
+    p_1_4 = t_1_4 / t_total * 100
     p_5 = t_5 / t_total * 100
     p_6 = t_6 / t_total * 100
     p_other = t_other / t_total * 100
 
-    return p_1_2, p_3, p_4, p_5, p_6, p_other
+    return p_1_4, p_5, p_6, p_other
 
 if __name__ == "__main__":
 
@@ -524,12 +558,10 @@ faiss::fvec_inner_product_ref (/data/faiss-cpu-profiling/build/demos/demo_sift1M
 
 
     print("\n==== time consumption stats: ====")
-    t_1_2, t_3, t_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
-    p_1_2, p_3, p_4, p_5, p_6, p_other = get_percentage(t_1_2, t_3, t_4, t_5, t_6, t_other)
+    t_1_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
+    p_1_4, p_5, p_6, p_other = get_percentage(t_1_4, t_5, t_6, t_other)
     print("\nTime consumption per stage:")
-    print("S1~2: {:.4f} sec\t{:.4f}%".format(t_1_2, p_1_2))
-    print("S3: {:.4f} sec\t{:.4f}%".format(t_3, p_3))
-    print("S4: {:.4f} sec\t{:.4f}%".format(t_4, p_4))
+    print("S1~4: {:.4f} sec\t{:.4f}%".format(t_1_2, p_1_4))
     print("S5: {:.4f} sec\t{:.4f}%".format(t_5, p_5))
     print("S6: {:.4f} sec\t{:.4f}%".format(t_6, p_6))
     print("other: {:.4f} sec\t{:.4f}%".format(t_other, p_other))

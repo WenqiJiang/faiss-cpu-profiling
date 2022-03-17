@@ -19,14 +19,14 @@ x_labels = ['OPQ16,IVF65536\ntopK=1', \
     'OPQ16,IVF65536\ntopK=1000']
 
 file_prefixes = [ \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_10_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_20_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_50_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_100_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_200_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_500_nprobe_51_qbs_10000', \
-    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1000_nprobe_51_qbs_10000']
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_10_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_20_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_50_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_100_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_200_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_500_nprobe_64_qbs_10000', \
+    'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_1000_nprobe_64_qbs_10000']
 
 assert len(x_labels) == len(file_prefixes)
 
@@ -40,21 +40,21 @@ for p in file_prefixes:
     # time_bias_end = 200.659
 time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== topK=1 ====
-    (6.780, 28.286),
+    (5.965, 7.150),
     # ==== topK=10 ====
-    (6.729, 19.908),
+    (5.945, 7.091),
     # ==== topK=20 ====
-    (8.408, 27.977),
+    (5.871, 6.998),
     # ==== topK=50 ====
-    (8.361, 20.198),
+    (5.858, 7.071),
     # ==== topK=100 ====
-    (6.712, 23.654),
+    (6.774, 8.057),
     # ==== topK=200 ====
-    (6.801, 21.787),
+    (5.996, 7.285),
     # ==== topK=500 ====
-    (9.370, 33.442),
+    (5.878, 7.347),
     # ==== topK=1000 ====
-    (6.823, 26.276)]
+    (5.853, 7.724)]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -76,15 +76,13 @@ for i in range(len(path_prefixes)):
     all_events = group_perf_by_events(path_prefixes[i])
     time_bias_start, time_bias_end = time_ranges[i][0], time_ranges[i][1]
     filtered_events = filter_events_after_timestamp(all_events, time_bias_start, time_bias_end)
-    t_1_2, t_3, t_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
-    p_1_2, p_3, p_4, p_5, p_6, p_other = get_percentage(t_1_2, t_3, t_4, t_5, t_6, t_other)
-    profile_perc_array.append([p_1_2, p_3, p_4, p_5, p_6, p_other])
+    t_1_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False, remove_unrecognized_faiss_function=False)
+    p_1_4, p_5, p_6, p_other = get_percentage(t_1_4, t_5, t_6, t_other)
+    profile_perc_array.append([p_1_4, p_5, p_6, p_other])
 
-y_stage_1_2 = [r[0] for r in profile_perc_array]
-y_stage_3 = [r[1] for r in profile_perc_array]
-y_stage_4 = [r[2] for r in profile_perc_array]
-y_stage_5 = [r[3] for r in profile_perc_array]
-y_stage_6 = [r[4] for r in profile_perc_array]
-y_other = [r[5] for r in profile_perc_array]
+y_stage_1_4 = [r[0] for r in profile_perc_array]
+y_stage_5 = [r[1] for r in profile_perc_array]
+y_stage_6 = [r[2] for r in profile_perc_array]
+y_other = [r[3] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_5_topK_SIFT100M', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_5_topK_SIFT100M', x_tick_rotation=45)

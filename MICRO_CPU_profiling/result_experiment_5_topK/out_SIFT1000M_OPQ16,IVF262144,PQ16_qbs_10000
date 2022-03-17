@@ -1,0 +1,88 @@
+==== topK=1 ====
+[27.937 s] Loading queries
+[27.940 s] Loading ground truth for 10000 queries
+k=1 k_max=1000
+[28.016 s] Setting parameter configuration "nprobe=51" on index
+[28.016 s] Perform a search on 10000 queries
+[20.936 s] Search complete, QPS=4776.462
+[48.952 s] Compute recalls
+R@1 = 0.3334
+==== topK=10 ====
+[27.313 s] Loading queries
+[27.317 s] Loading ground truth for 10000 queries
+k=10 k_max=1000
+[27.390 s] Setting parameter configuration "nprobe=51" on index
+[27.390 s] Perform a search on 10000 queries
+[21.015 s] Search complete, QPS=4758.506
+[48.406 s] Compute recalls
+R@1 = 0.3334
+R@10 = 0.7783
+==== topK=20 ====
+[27.354 s] Loading queries
+[27.358 s] Loading ground truth for 10000 queries
+k=20 k_max=1000
+[27.431 s] Setting parameter configuration "nprobe=51" on index
+[27.431 s] Perform a search on 10000 queries
+[21.400 s] Search complete, QPS=4672.897
+[48.832 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@20 = 0.8572
+==== topK=50 ====
+[28.332 s] Loading queries
+[28.336 s] Loading ground truth for 10000 queries
+k=50 k_max=1000
+[28.412 s] Setting parameter configuration "nprobe=51" on index
+[28.412 s] Perform a search on 10000 queries
+[21.046 s] Search complete, QPS=4751.497
+[49.459 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@50 = 0.9067
+==== topK=100 ====
+[27.201 s] Loading queries
+[27.205 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[27.279 s] Setting parameter configuration "nprobe=51" on index
+[27.279 s] Perform a search on 10000 queries
+[21.063 s] Search complete, QPS=4747.662
+[48.343 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@100 = 0.9198
+==== topK=200 ====
+[27.330 s] Loading queries
+[27.334 s] Loading ground truth for 10000 queries
+k=200 k_max=1000
+[27.408 s] Setting parameter configuration "nprobe=51" on index
+[27.408 s] Perform a search on 10000 queries
+[21.182 s] Search complete, QPS=4720.990
+[48.591 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@100 = 0.9198
+R@200 = 0.9244
+==== topK=500 ====
+[28.028 s] Loading queries
+[28.032 s] Loading ground truth for 10000 queries
+k=500 k_max=1000
+[28.107 s] Setting parameter configuration "nprobe=51" on index
+[28.107 s] Perform a search on 10000 queries
+[22.582 s] Search complete, QPS=4428.306
+[50.689 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@100 = 0.9198
+R@500 = 0.9256
+==== topK=1000 ====
+[27.312 s] Loading queries
+[27.316 s] Loading ground truth for 10000 queries
+k=1000 k_max=1000
+[27.390 s] Setting parameter configuration "nprobe=51" on index
+[27.390 s] Perform a search on 10000 queries
+[22.179 s] Search complete, QPS=4508.770
+[49.570 s] Compute recalls
+R@1 = 0.3333
+R@10 = 0.7783
+R@100 = 0.9198
+R@1000 = 0.9259

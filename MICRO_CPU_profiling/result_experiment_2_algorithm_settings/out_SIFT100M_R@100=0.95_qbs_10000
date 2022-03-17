@@ -1,0 +1,198 @@
+==== IVF1024,PQ16 ====
+[2.709 s] Loading queries
+[2.713 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[2.788 s] Setting parameter configuration "nprobe=12" on index
+[2.788 s] Perform a search on 10000 queries
+[6.663 s] Search complete, QPS=1500.825
+[9.451 s] Compute recalls
+R@1 = 0.3219
+R@10 = 0.7788
+R@100 = 0.9507
+==== IVF2048,PQ16 ====
+[2.827 s] Loading queries
+[2.831 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[2.905 s] Setting parameter configuration "nprobe=15" on index
+[2.905 s] Perform a search on 10000 queries
+[4.755 s] Search complete, QPS=2103.049
+[7.661 s] Compute recalls
+R@1 = 0.3305
+R@10 = 0.7874
+R@100 = 0.9535
+==== IVF4096,PQ16 ====
+[2.870 s] Loading queries
+[2.874 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[2.947 s] Setting parameter configuration "nprobe=20" on index
+[2.947 s] Perform a search on 10000 queries
+[3.947 s] Search complete, QPS=2533.570
+[6.895 s] Compute recalls
+R@1 = 0.3296
+R@10 = 0.7921
+R@100 = 0.9513
+==== IVF8192,PQ16 ====
+[14.186 s] Loading queries
+[14.199 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[14.464 s] Setting parameter configuration "nprobe=26" on index
+[14.464 s] Perform a search on 10000 queries
+[2.759 s] Search complete, QPS=3624.502
+[17.223 s] Compute recalls
+R@1 = 0.3394
+R@10 = 0.8065
+R@100 = 0.9507
+==== IVF16384,PQ16 ====
+[3.774 s] Loading queries
+[3.778 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[3.852 s] Setting parameter configuration "nprobe=35" on index
+[3.852 s] Perform a search on 10000 queries
+[1.694 s] Search complete, QPS=5903.188
+[5.546 s] Compute recalls
+R@1 = 0.3545
+R@10 = 0.8092
+R@100 = 0.9519
+==== IVF32768,PQ16 ====
+[4.777 s] Loading queries
+[4.781 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[4.857 s] Setting parameter configuration "nprobe=49" on index
+[4.857 s] Perform a search on 10000 queries
+[1.339 s] Search complete, QPS=7468.260
+[6.198 s] Compute recalls
+R@1 = 0.3597
+R@10 = 0.8225
+R@100 = 0.9504
+==== IVF65536,PQ16 ====
+[6.716 s] Loading queries
+[6.720 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[6.794 s] Setting parameter configuration "nprobe=65" on index
+[6.794 s] Perform a search on 10000 queries
+[1.422 s] Search complete, QPS=7032.349
+[8.216 s] Compute recalls
+R@1 = 0.3669
+R@10 = 0.8304
+R@100 = 0.9511
+==== IVF131072,PQ16 ====
+[10.390 s] Loading queries
+[10.394 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[10.468 s] Setting parameter configuration "nprobe=84" on index
+[10.468 s] Perform a search on 10000 queries
+[1.390 s] Search complete, QPS=7194.245
+[11.859 s] Compute recalls
+R@1 = 0.3698
+R@10 = 0.8380
+R@100 = 0.9500
+==== IVF262144,PQ16 ====
+[16.398 s] Loading queries
+[16.402 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[16.478 s] Setting parameter configuration "nprobe=115" on index
+[16.478 s] Perform a search on 10000 queries
+[18.068 s] Search complete, QPS=553.465
+[34.546 s] Compute recalls
+R@1 = 0.3880
+R@10 = 0.8470
+R@100 = 0.9501
+==== OPQ16,IVF1024,PQ16 ====
+[2.711 s] Loading queries
+[2.715 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[2.788 s] Setting parameter configuration "nprobe=11" on index
+[2.788 s] Perform a search on 10000 queries
+[6.623 s] Search complete, QPS=1509.890
+[9.412 s] Compute recalls
+R@1 = 0.3390
+R@10 = 0.7969
+R@100 = 0.9520
+==== OPQ16,IVF2048,PQ16 ====
+[2.832 s] Loading queries
+[2.836 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[2.912 s] Setting parameter configuration "nprobe=14" on index
+[2.912 s] Perform a search on 10000 queries
+[4.088 s] Search complete, QPS=2446.184
+[7.000 s] Compute recalls
+R@1 = 0.3331
+R@10 = 0.8057
+R@100 = 0.9532
+==== OPQ16,IVF4096,PQ16 ====
+[2.976 s] Loading queries
+[2.980 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[3.054 s] Setting parameter configuration "nprobe=19" on index
+[3.054 s] Perform a search on 10000 queries
+[2.921 s] Search complete, QPS=3423.485
+[5.976 s] Compute recalls
+R@1 = 0.3462
+R@10 = 0.8047
+R@100 = 0.9513
+==== OPQ16,IVF8192,PQ16 ====
+[14.403 s] Loading queries
+[14.408 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[14.482 s] Setting parameter configuration "nprobe=25" on index
+[14.482 s] Perform a search on 10000 queries
+[2.776 s] Search complete, QPS=3602.305
+[17.258 s] Compute recalls
+R@1 = 0.3495
+R@10 = 0.8214
+R@100 = 0.9508
+==== OPQ16,IVF16384,PQ16 ====
+[3.829 s] Loading queries
+[3.833 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[3.908 s] Setting parameter configuration "nprobe=33" on index
+[3.909 s] Perform a search on 10000 queries
+[1.770 s] Search complete, QPS=5649.718
+[5.679 s] Compute recalls
+R@1 = 0.3620
+R@10 = 0.8233
+R@100 = 0.9509
+==== OPQ16,IVF32768,PQ16 ====
+[4.767 s] Loading queries
+[4.771 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[4.844 s] Setting parameter configuration "nprobe=47" on index
+[4.844 s] Perform a search on 10000 queries
+[1.438 s] Search complete, QPS=6954.103
+[6.283 s] Compute recalls
+R@1 = 0.3745
+R@10 = 0.8324
+R@100 = 0.9507
+==== OPQ16,IVF65536,PQ16 ====
+[6.696 s] Loading queries
+[6.700 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[6.774 s] Setting parameter configuration "nprobe=64" on index
+[6.774 s] Perform a search on 10000 queries
+[1.283 s] Search complete, QPS=7794.232
+[8.057 s] Compute recalls
+R@1 = 0.3767
+R@10 = 0.8380
+R@100 = 0.9511
+==== OPQ16,IVF131072,PQ16 ====
+[10.383 s] Loading queries
+[10.387 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[10.460 s] Setting parameter configuration "nprobe=79" on index
+[10.460 s] Perform a search on 10000 queries
+[1.353 s] Search complete, QPS=7390.983
+[11.814 s] Compute recalls
+R@1 = 0.3804
+R@10 = 0.8453
+R@100 = 0.9500
+==== OPQ16,IVF262144,PQ16 ====
+[16.044 s] Loading queries
+[16.048 s] Loading ground truth for 10000 queries
+k=100 k_max=1000
+[16.121 s] Setting parameter configuration "nprobe=116" on index
+[16.121 s] Perform a search on 10000 queries
+[19.268 s] Search complete, QPS=518.995
+[35.389 s] Compute recalls
+R@1 = 0.3866
+R@10 = 0.8543
+R@100 = 0.9500

@@ -76,16 +76,14 @@ for i in range(len(path_prefixes)):
     all_events = group_perf_by_events(path_prefixes[i])
     time_bias_start, time_bias_end = time_ranges[i][0], time_ranges[i][1]
     filtered_events = filter_events_after_timestamp(all_events, time_bias_start, time_bias_end)
-    t_1_2, t_3, t_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
-    p_1_2, p_3, p_4, p_5, p_6, p_other = get_percentage(t_1_2, t_3, t_4, t_5, t_6, t_other)
-    profile_perc_array.append([p_1_2, p_3, p_4, p_5, p_6, p_other])
+    t_1_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False, remove_unrecognized_faiss_function=False)
+    p_1_4, p_5, p_6, p_other = get_percentage(t_1_4, t_5, t_6, t_other)
+    profile_perc_array.append([p_1_4, p_5, p_6, p_other])
 
-y_stage_1_2 = [r[0] for r in profile_perc_array]
-y_stage_3 = [r[1] for r in profile_perc_array]
-y_stage_4 = [r[2] for r in profile_perc_array]
-y_stage_5 = [r[3] for r in profile_perc_array]
-y_stage_6 = [r[4] for r in profile_perc_array]
-y_other = [r[5] for r in profile_perc_array]
+y_stage_1_4 = [r[0] for r in profile_perc_array]
+y_stage_5 = [r[1] for r in profile_perc_array]
+y_stage_6 = [r[2] for r in profile_perc_array]
+y_other = [r[3] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe_SIFT1000M', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe_SIFT1000M', x_tick_rotation=45)
 

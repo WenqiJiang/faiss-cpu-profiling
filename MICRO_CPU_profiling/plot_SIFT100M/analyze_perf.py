@@ -404,12 +404,15 @@ def classify_events_by_stages(events, track_non_faiss_func=True, remove_unrecogn
             "::fvec_norm_L2sqr" in fname or \
             "::fvec_norms_L2sqr" in fname or \
             "::precompute_list_tables" in fname or \
-            "::faiss::stage_4_sgemm" in fname:
+            "::faiss::stage_4_sgemm" in fname or \
+            "compute_distance_table" in fname: 
             return 't_1_4'
         # S 1~4 but unknown which
         elif \
             "sgemm" in fname or \
-            "inner_prod" in fname:
+            "inner_prod" in fname or \
+            "L2sqr" in fname or \
+            "compute_residual" in fname:
             return 't_1_4'
         elif "::scan_codes" in fname or \
             "::get_codes" in fname or \
