@@ -44,7 +44,7 @@ ax.set_xticks(x)
 ax.set_xticklabels(x_labels, fontsize=tick_label_font)
 plt.xticks(rotation=0)
 
-legend_list = ['IVF-PQ with OPQ', 'IVF-PQ without OPQ']
+legend_list = ['IVF-PQ without OPQ', 'IVF-PQ with OPQ']
 ax.legend([rects1, rects2], legend_list, facecolor='white', framealpha=1, frameon=False, loc=(0.02, 0.65), fontsize=legend_font, ncol=1)
 
 # ax.set_title('{} R@{}={}: {:.2f}x over CPU, {:.2f}x over GPU'.format(

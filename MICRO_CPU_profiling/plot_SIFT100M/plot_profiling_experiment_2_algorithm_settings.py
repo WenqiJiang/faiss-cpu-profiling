@@ -60,11 +60,11 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== IVF4096,PQ16 ====
     (2.947, 6.895),
     # ==== OPQ16,IVF4096,PQ16 ====
-    (3.054, 5.976),
+    (3.054, 17.223),
     # ==== IVF8192,PQ16 ====
-    (3.374, 5.241),
+    (14.464, 17.223),
     # ==== OPQ16,IVF8192,PQ16 ====
-    (3.380, 6.188),
+    (14.482, 17.258),
     # ==== IVF16384,PQ16 ====
     (3.852, 5.546),
     # ==== OPQ16,IVF16384,PQ16 ====
@@ -82,9 +82,9 @@ time_ranges = [ # pair of (time_bias_start, time_bias_end)
     # ==== OPQ16,IVF131072,PQ16 ====
     (10.460, 11.814),
     # ==== IVF262144,PQ16 ====
-    (4.027, 22.095),
+    (16.478, 34.546),
     # ==== OPQ16,IVF262144,PQ16 ====
-    (4.065, 7.455) ]
+    (16.121, 35.389) ]
 
 # Stage 1: OPQ
 # Stage 2: vector quantizer
@@ -106,16 +106,14 @@ for i in range(len(path_prefixes)):
     all_events = group_perf_by_events(path_prefixes[i])
     time_bias_start, time_bias_end = time_ranges[i][0], time_ranges[i][1]
     filtered_events = filter_events_after_timestamp(all_events, time_bias_start, time_bias_end)
-    t_1_2, t_3, t_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
-    p_1_2, p_3, p_4, p_5, p_6, p_other = get_percentage(t_1_2, t_3, t_4, t_5, t_6, t_other)
-    profile_perc_array.append([p_1_2, p_3, p_4, p_5, p_6, p_other])
+    t_1_4, t_5, t_6, t_other = classify_events_by_stages(filtered_events, track_non_faiss_func=False)
+    p_1_4, p_5, p_6, p_other = get_percentage(t_1_4, t_5, t_6, t_other)
+    profile_perc_array.append([p_1_4, p_5, p_6, p_other])
 
-y_stage_1_2 = [r[0] for r in profile_perc_array]
-y_stage_3 = [r[1] for r in profile_perc_array]
-y_stage_4 = [r[2] for r in profile_perc_array]
-y_stage_5 = [r[3] for r in profile_perc_array]
-y_stage_6 = [r[4] for r in profile_perc_array]
-y_other = [r[5] for r in profile_perc_array]
+y_stage_1_4 = [r[0] for r in profile_perc_array]
+y_stage_5 = [r[1] for r in profile_perc_array]
+y_stage_6 = [r[2] for r in profile_perc_array]
+y_other = [r[3] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_2, y_stage_3, y_stage_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_2_algorithm_settings_SIFT100M', x_tick_rotation=70)
+draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_2_algorithm_settings_SIFT100M', x_tick_rotation=70)
 

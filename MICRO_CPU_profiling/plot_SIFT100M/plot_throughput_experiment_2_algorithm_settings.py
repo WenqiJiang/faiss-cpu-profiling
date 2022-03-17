@@ -6,8 +6,8 @@ import pickle
 plt.style.use('ggplot')
 
 # SIFT100M, K=100
-y_no_OPQ = np.array([1500, 2103, 2533, 5359, 5903, 7468, 7032, 7194, 553])
-y_OPQ = np.array([1509, 2446, 3423, 3561, 5649, 6954, 7794, 7390, 2950])
+y_no_OPQ = np.array([1500, 2103, 2533, 3624, 5903, 7468, 7032, 7194, 553])
+y_OPQ = np.array([1509, 2446, 3423, 3602, 5649, 6954, 7794, 7390, 518])
 
 x_labels = ['nlist=1024', 'nlist=2048', 'nlist=4096','nlist=8192', \
     'nlist=16384', 'nlist=32768', 'nlist=65536', 'nlist=131072', 'nlist=262144']
@@ -44,7 +44,7 @@ ax.set_xticks(x)
 ax.set_xticklabels(x_labels, fontsize=tick_label_font)
 plt.xticks(rotation=0)
 
-legend_list = ['IVF-PQ with OPQ', 'IVF-PQ without OPQ']
+legend_list = ['IVF-PQ without OPQ', 'IVF-PQ with OPQ']
 ax.legend([rects1, rects2], legend_list, facecolor='white', framealpha=1, frameon=False, loc=(0.02, 0.65), fontsize=legend_font, ncol=1)
 
 # ax.set_title('{} R@{}={}: {:.2f}x over CPU, {:.2f}x over GPU'.format(
