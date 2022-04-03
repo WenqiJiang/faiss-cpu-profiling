@@ -9,14 +9,23 @@ from analyze_perf import group_perf_by_events, filter_events_after_timestamp, \
 from profiling_stages import draw_profiling_plot
 
 
-x_labels = ['OPQ16,IVF65536\nnprobe=1', \
-    'OPQ16,IVF65536\nnprobe=2', \
-    'OPQ16,IVF65536\nnprobe=4', \
-    'OPQ16,IVF65536\nnprobe=8', \
-    'OPQ16,IVF65536\nnprobe=16', \
-    'OPQ16,IVF65536\nnprobe=32', \
-    'OPQ16,IVF65536\nnprobe=64', \
-    'OPQ16,IVF65536\nnprobe=128']
+x_labels = ['nprobe=1', \
+    'nprobe=2', \
+    'nprobe=4', \
+    'nprobe=8', \
+    'nprobe=16', \
+    'nprobe=32', \
+    'nprobe=64', \
+    'nprobe=128']
+
+# x_labels = ['OPQ16,IVF65536\nnprobe=1', \
+#     'OPQ16,IVF65536\nnprobe=2', \
+#     'OPQ16,IVF65536\nnprobe=4', \
+#     'OPQ16,IVF65536\nnprobe=8', \
+#     'OPQ16,IVF65536\nnprobe=16', \
+#     'OPQ16,IVF65536\nnprobe=32', \
+#     'OPQ16,IVF65536\nnprobe=64', \
+#     'OPQ16,IVF65536\nnprobe=128']
 
 file_prefixes = [ \
     'perf.out_SIFT100M_OPQ16,IVF65536,PQ16_K_100_nprobe_1_qbs_10000', \
@@ -85,5 +94,6 @@ y_stage_5 = [r[1] for r in profile_perc_array]
 y_stage_6 = [r[2] for r in profile_perc_array]
 y_other = [r[3] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe_SIFT100M', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_4_nprobe_SIFT100M',
+    x_tick_rotation=30, title="CPU,SIFT100M,OPQ16+IVF65536")
 

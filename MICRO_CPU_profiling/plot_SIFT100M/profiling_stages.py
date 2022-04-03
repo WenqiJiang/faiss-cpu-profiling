@@ -5,7 +5,7 @@ import os
 
 def draw_profiling_plot(
     x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, filename,
-    x_tick_rotation=45):
+    x_tick_rotation=45, title='Title'):
 
     """
     Example input:
@@ -43,7 +43,7 @@ def draw_profiling_plot(
     x = np.arange(len(x_labels))  # the label locations
     width = 0.4  # the width of the bars
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 2))
+    fig, ax = plt.subplots(1, 1, figsize=(6, 2))
 
 
     bottom_stage_1_4 = np.zeros(len(y_stage_1_4))
@@ -60,18 +60,18 @@ def draw_profiling_plot(
     label_font = 10
     tick_font = 10
     tick_label_font = 9
-    legend_font = 8
-    title_font = 14
+    legend_font = 9
+    title_font = 11
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Time Consumption (%)', fontsize=label_font)
-    # ax.set_title('Scores by group and gender')
+    ax.set_title(title, fontsize=title_font, y=1.35)
     ax.set_xticks(x)
     ax.set_xticklabels(x_labels, fontsize=tick_label_font)
 
 
     ax.legend([rects_stage_1_4, rects_stage_5, rects_stage_6, rects_other], 
-        ["Stage 1~4: OPQ + vector quantizer + select centroids + construct distance LUT", \
+        ["Stage 1~4: OPQ + vector quantizer + \nselect centroids + construct distance LUT", \
         "Stage 5: scan PQ codes", "Stage 6: collect topK results", "Other"], loc=(-0.1, 1.05), ncol=2, \
       facecolor='white', framealpha=1, frameon=False, fontsize=legend_font)
 

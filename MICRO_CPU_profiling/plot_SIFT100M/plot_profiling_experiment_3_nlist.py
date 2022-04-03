@@ -9,15 +9,26 @@ from analyze_perf import group_perf_by_events, filter_events_after_timestamp, \
 from profiling_stages import draw_profiling_plot
 
 
-x_labels = ['IVF1024\nnprobe=16', \
-    'IVF2048\nnprobe=16', \
-    'IVF4096\nnprobe=16', \
-    'IVF8192\nnprobe=16', \
-    'IVF16384\nnprobe=16', \
-    'IVF32768\nnprobe=16', \
-    'IVF65536\nnprobe=16', \
-    'IVF131072\nnprobe=16', \
-    'IVF262144\nnprobe=16']
+x_labels = ['IVF1024', \
+    'IVF2048', \
+    'IVF4096', \
+    'IVF8192', \
+    'IVF16384', \
+    'IVF32768', \
+    'IVF65536', \
+    # 'IVF131072', \
+    # 'IVF262144\', \
+    ]
+# x_labels = ['IVF1024\nnprobe=16', \
+#     'IVF2048\nnprobe=16', \
+#     'IVF4096\nnprobe=16', \
+#     'IVF8192\nnprobe=16', \
+#     'IVF16384\nnprobe=16', \
+#     'IVF32768\nnprobe=16', \
+#     'IVF65536\nnprobe=16', \
+#     # 'IVF131072\nnprobe=16', \
+#     # 'IVF262144\nnprobe=16', \
+#     ]
 
 file_prefixes = [ \
     'perf.out_SIFT100M_IVF1024,PQ16_K_100_nprobe_16_qbs_10000', \
@@ -27,8 +38,9 @@ file_prefixes = [ \
     'perf.out_SIFT100M_IVF16384,PQ16_K_100_nprobe_16_qbs_10000', \
     'perf.out_SIFT100M_IVF32768,PQ16_K_100_nprobe_16_qbs_10000', \
     'perf.out_SIFT100M_IVF65536,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT100M_IVF131072,PQ16_K_100_nprobe_16_qbs_10000', \
-    'perf.out_SIFT100M_IVF262144,PQ16_K_100_nprobe_16_qbs_10000']
+    # 'perf.out_SIFT100M_IVF131072,PQ16_K_100_nprobe_16_qbs_10000', \
+    # 'perf.out_SIFT100M_IVF262144,PQ16_K_100_nprobe_16_qbs_10000', \
+    ]
 
 assert len(x_labels) == len(file_prefixes)
 
@@ -106,5 +118,6 @@ y_stage_5 = [r[1] for r in profile_perc_array]
 y_stage_6 = [r[2] for r in profile_perc_array]
 y_other = [r[3] for r in profile_perc_array]
 
-draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist_SIFT100M', x_tick_rotation=45)
+draw_profiling_plot(x_labels, y_stage_1_4, y_stage_5, y_stage_6, y_other, 'cpu_profile_experiment_3_nlist_SIFT100M', 
+    x_tick_rotation=30, title="CPU,SIFT100M,nprobe=16")
 
