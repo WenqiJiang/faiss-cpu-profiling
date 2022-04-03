@@ -74,7 +74,7 @@ python experiment_4_nprobe.py --dbname SIFT100M --index_key OPQ16,IVF65536,PQ16 
       --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
       --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT100M.pkl' --perf_enable 1
       
-python experiment_5_topK.py --dbname SIFT100M --index_key OPQ16,IVF65536,PQ16  --nprobe 51 --qbs 10000 --repeat_time 10 \
+python experiment_5_topK.py --dbname SIFT100M --index_key OPQ16,IVF65536,PQ16  --nprobe 64 --qbs 10000 --repeat_time 10 \
       --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
           --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
           --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
@@ -100,7 +100,7 @@ python experiment_4_nprobe.py --dbname SIFT1000M --index_key OPQ16,IVF262144,PQ1
       --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \
       --nprobe_dict_dir '../recall_info/cpu_recall_index_nprobe_pairs_SIFT1000M.pkl' --perf_enable 1
       
-python experiment_5_topK.py --dbname SIFT1000M --index_key OPQ16,IVF262144,PQ16  --nprobe 51 --qbs 10000 --repeat_time 10 \
+python experiment_5_topK.py --dbname SIFT1000M --index_key OPQ16,IVF262144,PQ16  --nprobe 86 --qbs 10000 --repeat_time 10 \
       --cpp_bin_dir /home/ubuntu/faiss-cpu-profiling/build/demos/bigann_search \
           --index_parent_dir /data/Faiss_experiments/trained_CPU_indexes/ \
           --gt_parent_dir /data/Faiss_experiments/bigann/gnd/ \

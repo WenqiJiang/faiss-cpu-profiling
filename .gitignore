@@ -27,3 +27,4 @@ SIFT1M
 sift1M
 perf*
 *tar.gz
+faiss/python/swigfaiss_avx2.swig

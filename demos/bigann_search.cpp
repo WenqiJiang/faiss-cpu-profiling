@@ -216,10 +216,12 @@ printf("k=%d k_max=%d\n", k, k_max);
         //double t_before_search = elapsed();
         for (int rt = 0; rt < repeat_time; rt++) {
             // Flush cacheline
+/*
             for(int i = 0; i < bigger_than_cachesize; i++)
             {  
        		p[i] = 0;
    	    }
+*/
             index->search(nq, xq, k, D, I); 
         }
 
